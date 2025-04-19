@@ -2,12 +2,14 @@ import json
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import asyncio
+import time
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 API_TOKEN = '7587174199:AAHWM0Bq3EgZtJMxU6wBvXMfmDBBLGRdrx8'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
+
 
 reminders_file = 'reminders.json'
 
@@ -91,9 +93,25 @@ async def cmd_remove(message: types.Message):
     except (IndexError, ValueError):
         await message.reply("❗ Ошибка. Убедись, что ты указал правильный ID.")
 
+async def hourly_reminder(message: types.Message):
+    while True:
+        await asyncio.sleep(3600)  # каждый час
+        reminders = load_reminders()
+        user_id = str(message.from_user.id)
+        for user_id in reminders:
+            try:
+                await bot.send_message(chat_id=user_id, text="🕐 Напоминание: не забудь сделать важное!")
+            except Exception as e:
+                print(f"Ошибка при отправке: {e}")
 
+async def delete_webhook():
+    await bot.delete_webhook()
+
+# Запуск бота с удалением webhook
 async def main():
-    await dp.start_polling(bot)
+    await delete_webhook()  # Удаляем webhook перед запуском polling
+    await dp.start_polling(bot)  # Запускаем polling
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Просто вызываем main() с await, без использования asyncio.run()
+    asyncio.get_event_loop().run_until_complete(main())
