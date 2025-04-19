@@ -100,7 +100,8 @@ async def hourly_reminder(message: types.Message):
         user_id = str(message.from_user.id)
         for user_id in reminders:
             try:
-                await bot.send_message(chat_id=user_id, text="🕐 Напоминание: не забудь сделать важное!")
+                await bot.send_message(chat_id=user_id, text=f"🕐 Напоминания:{reminders}")
+                print("Напоминание было успешно отправлено!")
             except Exception as e:
                 print(f"Ошибка при отправке: {e}")
 
