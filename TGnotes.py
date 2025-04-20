@@ -6,7 +6,7 @@ import time
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-API_TOKEN = '7587174199:AAHWM0Bq3EgZtJMxU6wBvXMfmDBBLGRdrx8'
+API_TOKEN = '7587174199:AAF_C0oLWPu5KAtX34Oqsxe33quO9JdVLas'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
@@ -38,7 +38,8 @@ async def cmd_help(message: types.Message):
     await message.reply(
         "/add - Добавить заметку 📝\n"
         "/list — показывает все твои напоминания 📋\n"
-        "/remove <ID напоминания> — удаляет напоминание по ID ❌"
+        "/remove <ID напоминания> — удаляет напоминание по ID ❌",
+        "/remind_hourly - напоминать каждый час"
     )
 
 # /add command
@@ -92,6 +93,11 @@ async def cmd_remove(message: types.Message):
             await message.reply("⚠️ Напоминание с таким ID не найдено.")
     except (IndexError, ValueError):
         await message.reply("❗ Ошибка. Убедись, что ты указал правильный ID.")
+#напоминание каждый час
+@dp.message(Command("remind_hourly"))
+async def handle_hourly(message: types.Message):
+    asyncio.create_task(hourly_reminder(message))
+
 
 async def hourly_reminder(message: types.Message):
     while True:
