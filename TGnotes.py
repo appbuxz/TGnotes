@@ -38,7 +38,7 @@ async def cmd_help(message: types.Message):
     await message.reply(
         "/add - Добавить заметку 📝\n"
         "/list — показывает все твои напоминания 📋\n"
-        "/remove <ID напоминания> — удаляет напоминание по ID ❌",
+        "/remove <ID напоминания> — удаляет напоминание по ID ❌\n"
         "/remind_hourly - напоминать каждый час"
     )
 
@@ -97,7 +97,7 @@ async def cmd_remove(message: types.Message):
 @dp.message(Command("remind_hourly"))
 async def handle_hourly(message: types.Message):
     asyncio.create_task(hourly_reminder(message))
-
+    await message.reply("Я буду напоминать вам о заметках каждый час!🕐")
 
 async def hourly_reminder(message: types.Message):
     while True:
